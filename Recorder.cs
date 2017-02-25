@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -12,12 +13,12 @@ namespace AnimationRecorder
 
         public bool IsRecording { get; private set; }
 
-        public Recorder(Transform rootTransform, Transform[] recordingTransforms, int fps = 60)
+        public Recorder(Transform rootTransform, Transform[] recordingTransforms, int fps = 60, bool useEulerAngles = false)
         {
             clip = new AnimationClip { frameRate = fps, };
             AnimationUtility.SetAnimationClipSettings(clip, new AnimationClipSettings() { loopTime = false, });
 
-            recordableTransforms = recordingTransforms.Select(recordingTransform => new RecordableTransform(clip, rootTransform, recordingTransform)).ToArray();
+            recordableTransforms = recordingTransforms.Select(recordingTransform => new RecordableTransform(clip, rootTransform, recordingTransform, useEulerAngles)).ToArray();
         }
 
         public void RecordCurrentValue(float time)
@@ -34,11 +35,14 @@ namespace AnimationRecorder
 
             foreach (var recordableTransform in recordableTransforms)
             {
+                recordableTransform.ConnectSegmentedRotations();
                 recordableTransform.SetCurveToClip();
             }
 
             clip.EnsureQuaternionContinuity();
             AssetDatabase.CreateAsset(clip, path);
+            AssetDatabase.SaveAssets();
         }
     }
 }
+#endif

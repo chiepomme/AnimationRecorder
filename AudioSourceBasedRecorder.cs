@@ -6,6 +6,7 @@ namespace AnimationRecorder
 {
     public class AudioSourceBasedRecorder : MonoBehaviour
     {
+#if UNITY_EDITOR
         [SerializeField]
         float playingWaitSec = 3;
         [SerializeField]
@@ -14,6 +15,8 @@ namespace AnimationRecorder
         Transform[] recordingTransforms;
         [SerializeField]
         int fps = 60;
+        [SerializeField]
+        bool useEulerAngles = false;
         [SerializeField]
         string filePath = "Assets/hoge.anim";
 
@@ -66,5 +69,6 @@ namespace AnimationRecorder
                 i += 1;
             }
         }
+#endif
     }
 }

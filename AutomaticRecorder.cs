@@ -5,10 +5,13 @@ namespace AnimationRecorder
 {
     public class AutomaticRecorder : MonoBehaviour
     {
+#if UNITY_EDITOR
         [SerializeField]
         Transform[] recordingTransforms;
         [SerializeField]
         int fps = 60;
+        [SerializeField]
+        bool useEulerAngles = false;
         [SerializeField]
         string filePath = "Assets/hoge.anim";
 
@@ -42,5 +45,6 @@ namespace AnimationRecorder
                 i += 1;
             }
         }
+#endif
     }
 }

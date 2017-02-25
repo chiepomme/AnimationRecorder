@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+using UnityEngine;
 
 namespace AnimationRecorder
 {
@@ -32,9 +34,10 @@ namespace AnimationRecorder
 
         public void SetCurve()
         {
-            clip.SetCurve(relativePath, typeof(Transform), "localPosition.x", curveX.curve);
-            clip.SetCurve(relativePath, typeof(Transform), "localPosition.y", curveY.curve);
-            clip.SetCurve(relativePath, typeof(Transform), "localPosition.z", curveZ.curve);
+            AnimationUtility.SetEditorCurve(clip, new EditorCurveBinding() { path = relativePath, type = typeof(Transform), propertyName = "m_LocalPosition.x" }, curveX.curve);
+            AnimationUtility.SetEditorCurve(clip, new EditorCurveBinding() { path = relativePath, type = typeof(Transform), propertyName = "m_LocalPosition.y" }, curveY.curve);
+            AnimationUtility.SetEditorCurve(clip, new EditorCurveBinding() { path = relativePath, type = typeof(Transform), propertyName = "m_LocalPosition.z" }, curveZ.curve);
         }
     }
 }
+#endif

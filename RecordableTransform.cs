@@ -1,17 +1,26 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 
 namespace AnimationRecorder
 {
     public class RecordableTransform
     {
         readonly RecordablePosition position;
-        readonly RecordableRotation rotation;
+        readonly IRecordableRotation rotation;
 
-        public RecordableTransform(AnimationClip clip, Transform root, Transform target)
+        public RecordableTransform(AnimationClip clip, Transform root, Transform target, bool useEulerAngles = false)
         {
             var relativePath = BuildRelativePath(root, target);
             position = new RecordablePosition(clip, relativePath, target);
-            rotation = new RecordableRotation(clip, relativePath, target);
+
+            if (useEulerAngles)
+            {
+                rotation = new RecordableEulerRotation(clip, relativePath, target);
+            }
+            else
+            {
+                rotation = new RecordableQuaternionRotation(clip, relativePath, target);
+            }
         }
 
         public void RecordCurrentValue(float time)
@@ -24,6 +33,11 @@ namespace AnimationRecorder
         {
             position.SetCurve();
             rotation.SetCurve();
+        }
+
+        public void ConnectSegmentedRotations()
+        {
+            rotation.ConnectSegmentedRotations();
         }
 
         string BuildRelativePath(Transform root, Transform target)
@@ -44,3 +58,4 @@ namespace AnimationRecorder
         }
     }
 }
+#endif
